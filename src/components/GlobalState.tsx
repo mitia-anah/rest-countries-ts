@@ -1,6 +1,15 @@
-import React, { createContext , useEffect, useReducer} from 'react'
+import React, { createContext , useEffect, useReducer, useState} from 'react'
+
+type Languages = {
+   iso639_1: string, iso639_2: string, name: string, nativeName: string
+}
+type Currency = {
+    code: string, name: string, symbol: string
+}
+
 type Country = {
     name: string,
+    flag: string,
     topLevelDomain: string[],
     alpha2Code: string,
     alpha3Code: string,
@@ -18,21 +27,23 @@ type Country = {
     borders: string[],
     nativeName: string,
     numericCode: string,
-    currencies: string[],
-    languages: string[],
+    currencies: Currency[],
+    languages: Languages[],
     translations: string[],
-    flag: string,
     regionalBlocs: string[],
     cioc: string
 }
+
 type State = {
-    countries: Country[]
+    countries: Country[],
 }
 const initialState: State = {
-    countries: []
+    countries: [],
 };
+
 type Action = 
   | {type: "COUNTRY_DATA", payload: Country[]}
+//   | { type: "SEARCH_COUNTRY", value: }
 
 export const GlobalContext = createContext(initialState)
 
@@ -45,18 +56,24 @@ function reducer(state: State, action: Action) {
     }
 }
 export const GlobalProvider: React.FC = ({children}) => {
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [state, dispatch] = useReducer(reducer, initialState)  
+   
+
     async function getCountry() {
         const res = await fetch('https://restcountries.eu/rest/v2/all')
-       const data = await res.json()
-       console.log(data);
-       dispatch({type: "COUNTRY_DATA", payload: data})
+        const data = await res.json()
+        dispatch({type: "COUNTRY_DATA", payload: data})
     }
     useEffect(() => {
         getCountry()
     },[])
+
+    // function searchCountry() {
+    //     dispatch({type: "SEARCH_COUNTRY", value: query})
+    // }
     return (
-        <GlobalContext.Provider value={{ countries: state.countries }}>
+        <GlobalContext.Provider value={{ 
+            countries: state.countries}}>
             {children}
         </GlobalContext.Provider>
     )

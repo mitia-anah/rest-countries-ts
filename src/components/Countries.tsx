@@ -10,23 +10,23 @@ export default function Countries() {
     
 
     return (
-        <Link to='/:countryName'>
         <ListWrapper>
             {countries && countries.map(country => (
-                <List id={country.alpha2Code}>
-                        <div>
-                            <Image src={country.flag} alt={country.flag}/>
-                        </div>
-                        <div>
-                            <h2>{country.name}</h2>
-                            <p>{country.population}</p>
-                            <p>{country.region}</p>
-                            <p>{country.capital}</p>
-                        </div>
-                </List>
+                 <Link  to={`/country/${country.name}`}>
+                    <List id={country.name}>
+                            <div>
+                                <Image src={country.flag} alt={country.flag}/>
+                            </div>
+                            <div>
+                                <h2>{country.name}</h2>
+                                <p>{country.population}</p>
+                                <p>{country.region}</p>
+                                <p>{country.capital}</p>
+                            </div>
+                    </List>
+                </Link>
             ))}
         </ListWrapper>
-        </Link>
     )
 }
 
