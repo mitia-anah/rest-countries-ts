@@ -36,21 +36,32 @@ type Country = {
 
 type State = {
     countries: Country[],
+    regionName: string,
+    region: string[]
+    dispatch: React.Dispatch<any>
 }
 const initialState: State = {
     countries: [],
+    regionName: '',
+    region: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+    dispatch: () => null
 };
 
 type Action = 
   | {type: "COUNTRY_DATA", payload: Country[]}
-//   | { type: "SEARCH_COUNTRY", value: }
+  | { type: "SEARCH_COUNTRY_NAME", payload: Country[]}
+  | {type: "SEARCH_COUNTRY_REGION", payload: string}
 
 export const GlobalContext = createContext(initialState)
 
 function reducer(state: State, action: Action) {
     switch (action.type) {
         case 'COUNTRY_DATA':
-            return { countries: action.payload}
+            return { ...state, countries: action.payload}
+        case 'SEARCH_COUNTRY_NAME':
+            return { ...state, countries: action.payload}
+        case 'SEARCH_COUNTRY_REGION':
+            return { ...state, regionName: action.payload}
         default:
            return state
     }
@@ -68,12 +79,14 @@ export const GlobalProvider: React.FC = ({children}) => {
         getCountry()
     },[])
 
-    // function searchCountry() {
-    //     dispatch({type: "SEARCH_COUNTRY", value: query})
-    // }
+
     return (
         <GlobalContext.Provider value={{ 
-            countries: state.countries}}>
+            countries: state.countries,
+            dispatch,
+            region: state.region,
+            regionName: state.regionName,
+            }}>
             {children}
         </GlobalContext.Provider>
     )
